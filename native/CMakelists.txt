@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_C_COMPILER "/usr/bin/gcc")
+set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+set(JNI_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../src/main/java/net/craftoriya/memory_optimisations/jni/")
+set(JNI_SOURCE "${JNI_FOLDER}**.java")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+project(MEMOPTJNI)
+find_package(Java REQUIRED)
+find_package(JNI REQUIRED)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(JEMALLOC jemalloc)
+
+if (JEMALLOC_FOUND)
+    message(STATUS "Jemalloc found")
+    include_directories(${JEMALLOC_INCLUDE_DIRS})
+    link_directories(${JEMALLOC_LIBRARY_DIRS})
+else()
+    message(STATUS "Jemalloc not found")
+endif()
+
+find_library(Libs NAMES mylib paths /usr/lib /usr/local/lib)
+
+include_directories(/usr/local/include)
+include_directories(${JNI_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+file(GLOB SRC_FILES ${CMAKE_SOURCE_DIR}/src/**.c)
+add_library(MEMOPTJNI_LIB SHARED ${SRC_FILES})
+target_link_libraries(MEMOPTJNI_LIB ${JEMALLOC_LIBRARIES})
+target_link_libraries(MEMOPTJNI_LIB ${JNI_LIBRARIES})
+
+set_target_properties(MEMOPTJNI_LIB PROPERTIES
+     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/resources/native
+)
+set_target_properties(MEMOPTJNI_LIB PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/resources/native
+)
+
+add_custom_command(TARGET MEMOPTJNI_LIB POST_BUILD 
+    COMMAND execstack -c $<TARGET_FILE:MEMOPTJNI_LIB>
+)
+
+add_custom_target(headers 
+    COMMAND echo "Compiling headers"
+    COMMAND rm ${CMAKE_CURRENT_SOURCE_DIR}/include/**.h
+    COMMAND javac -h ${CMAKE_CURRENT_SOURCE_DIR}/include ${JNI_SOURCE}
+    COMMAND rm ${JNI_FOLDER}/**.class
+    COMMAND echo "Done"
+)

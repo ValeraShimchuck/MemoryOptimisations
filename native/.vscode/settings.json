@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "jemalloc.h": "c",
+        "net_craftoriya_memory_optimisations_jni_allocatedarrayjni.h": "c",
+        "stdio.h": "c"
+    }
+}
