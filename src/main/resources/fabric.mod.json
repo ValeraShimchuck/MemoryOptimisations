@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "memory_optimisations",
+  "version": "${version}",
+  "name": "Memory Optimisations",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/valer/Memory Optimisations"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/memory_optimisations/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.craftoriya.memory_optimisations.client.MemoryOptimisationsClient"
+    ],
+    "main": [
+      "net.craftoriya.memory_optimisations.MemoryOptimisations"
+    ]
+  },
+  "mixins": [
+    "memory_optimisations.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  },
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_6490": ["net/craftoriya/memory_optimisations/interfaces/palette/PaletteStorageExtension"],
+      "net/minecraft/class_7522": ["net/craftoriya/memory_optimisations/interfaces/palette/PalettedContainerExtension"],
+      "net/minecraft/class_2841": ["net/craftoriya/memory_optimisations/interfaces/palette/PalettedContainerExtension"],
+      "net/minecraft/class_2902": ["net/craftoriya/memory_optimisations/interfaces/palette/Freeable"],
+      "net/minecraft/class_2791": ["net/craftoriya/memory_optimisations/interfaces/palette/Freeable"],
+      "net/minecraft/class_2818": ["net/craftoriya/memory_optimisations/interfaces/palette/Freeable"],
+      "net/minecraft/class_8528": ["net/craftoriya/memory_optimisations/interfaces/palette/Freeable"]
+    }
+  }
+}
